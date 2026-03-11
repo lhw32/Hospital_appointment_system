@@ -1,0 +1,10 @@
+ v7.2.2458.9
+Unknown Version: 6.2  (Build 9200)
+System Default Locale: 한국어(대한민국)
+User Default Locale: 한국어(대한민국)
+03 December 2025 23:03:57
+--------------------------------------------------
+
+Error XML - 155: Could not open 'G:\내 드라이브\학교\3-2\데이터베이스 설계\개별 프로젝트\hospital_model_erwin_7_2_9_2458.xml'.  If this XML file was not validated against the AllFusion ERwin DM schema, you may be able to obtain more information regarding this error by re-running the import with the XML validation option turned on. 
+
+

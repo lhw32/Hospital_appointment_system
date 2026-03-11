@@ -1,0 +1,42 @@
+-- PL/SQL 테스트 (Test Execution)
+
+SET SERVEROUTPUT ON;
+DECLARE
+    v_result_msg VARCHAR2(200);
+    v_appt_time DATE := TO_DATE('2025-12-10 10:30', 'YYYY-MM-DD HH24:MI');
+BEGIN
+    -- 성공 케이스: 환자 김철수(1000)가 의사 박민준(200)에게 12월 10일 10:30에 예약
+    DBMS_OUTPUT.PUT_LINE('--- 테스트 1: 성공 케이스 ---');
+    PROC_APPOINTMENT_REGISTER(
+        p_pt_id => 1000,
+        p_dr_id => 200,
+        p_appt_datetime => v_appt_time,
+        p_appt_reason => '감기 증상',
+        p_result_msg => v_result_msg
+    );
+    DBMS_OUTPUT.PUT_LINE(v_result_msg);
+
+    -- 실패 케이스: 중복 예약 시도
+    DBMS_OUTPUT.PUT_LINE('--- 테스트 2: 중복 예약 실패 케이스 ---');
+    PROC_APPOINTMENT_REGISTER(
+        p_pt_id => 1000,
+        p_dr_id => 200,
+        p_appt_datetime => v_appt_time, -- 동일 시간
+        p_appt_reason => '재예약 시도',
+        p_result_msg => v_result_msg
+    );
+    DBMS_OUTPUT.PUT_LINE(v_result_msg);
+
+    -- 실패 케이스: 의사 근무 시간 외 예약 시도 (08:30)
+    DBMS_OUTPUT.PUT_LINE('--- 테스트 3: 스케줄 없음 실패 케이스 ---');
+    PROC_APPOINTMENT_REGISTER(
+        p_pt_id => 1001,
+        p_dr_id => 200,
+        p_appt_datetime => TO_DATE('2025-12-10 08:30', 'YYYY-MM-DD HH24:MI'),
+        p_appt_reason => '오픈 전 예약',
+        p_result_msg => v_result_msg
+    );
+    DBMS_OUTPUT.PUT_LINE(v_result_msg);
+
+END;
+/

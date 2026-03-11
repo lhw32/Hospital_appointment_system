@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ERwin ERX export (simplified) for ERwin version 7.2.9.2458 -->
+<ERwinExport version="7.2.9.2458" exportDate="2025-12-03T13:57:07.939826">
+  <Model name="Hospital_Appointment_Model" version="7.2.9.2458">
+    <Entities>
+      <Entity name="DEPARTMENT" id="ENT_DEPT">
+        <Column name="DEPT_CODE" datatype="CHAR(3)" nullable="NO" key="PK"/>
+        <Column name="DEPT_NAME" datatype="VARCHAR2(50)" nullable="NO" unique="YES"/>
+      </Entity>
+      <Entity name="PATIENT" id="ENT_PAT">
+        <Column name="PT_ID" datatype="NUMBER(10)" nullable="NO" key="PK" default="PT_ID_SEQ.NEXTVAL"/>
+        <Column name="PT_NAME" datatype="VARCHAR2(50)" nullable="NO"/>
+        <Column name="PT_SSN" datatype="CHAR(14)" nullable="NO" unique="YES"/>
+        <Column name="PT_PHONE" datatype="VARCHAR2(20)" nullable="YES"/>
+        <Column name="PT_ADDRESS" datatype="VARCHAR2(200)" nullable="YES"/>
+        <Column name="PT_REG_DATE" datatype="DATE" nullable="NO" default="SYSDATE"/>
+      </Entity>
+      <Entity name="DOCTOR" id="ENT_DR">
+        <Column name="DR_ID" datatype="NUMBER(5)" nullable="NO" key="PK" default="DR_ID_SEQ.NEXTVAL"/>
+        <Column name="DR_NAME" datatype="VARCHAR2(50)" nullable="NO"/>
+        <Column name="DEPT_CODE" datatype="CHAR(3)" nullable="NO" fk="DEPARTMENT.DEPT_CODE"/>
+        <Column name="DR_LICENSE_NO" datatype="CHAR(10)" nullable="NO" unique="YES"/>
+        <Column name="DR_PHONE" datatype="VARCHAR2(20)" nullable="YES"/>
+        <Column name="DR_EMAIL" datatype="VARCHAR2(100)" nullable="YES"/>
+      </Entity>
+      <Entity name="SCHEDULE" id="ENT_SCH">
+        <Column name="SCH_ID" datatype="NUMBER(10)" nullable="NO" key="PK" default="SCH_ID_SEQ.NEXTVAL"/>
+        <Column name="DR_ID" datatype="NUMBER(5)" nullable="NO" fk="DOCTOR.DR_ID"/>
+        <Column name="SCH_DATE" datatype="DATE" nullable="NO"/>
+        <Column name="SCH_START_TIME" datatype="CHAR(5)" nullable="NO"/>
+        <Column name="SCH_END_TIME" datatype="CHAR(5)" nullable="NO"/>
+        <Constraint type="UNIQUE">DR_ID, SCH_DATE</Constraint>
+      </Entity>
+      <Entity name="APPOINTMENT" id="ENT_APPT">
+        <Column name="APPT_ID" datatype="NUMBER(10)" nullable="NO" key="PK" default="APPT_ID_SEQ.NEXTVAL"/>
+        <Column name="PT_ID" datatype="NUMBER(10)" nullable="NO" fk="PATIENT.PT_ID"/>
+        <Column name="DR_ID" datatype="NUMBER(5)" nullable="NO" fk="DOCTOR.DR_ID"/>
+        <Column name="DR_NAME" datatype="VARCHAR2(50)" nullable="NO"/>
+        <Column name="APPT_DATETIME" datatype="DATE" nullable="NO"/>
+        <Column name="APPT_STATUS" datatype="VARCHAR2(10)" nullable="NO"/>
+        <Column name="APPT_REASON" datatype="VARCHAR2(500)" nullable="YES"/>
+        <Constraint type="UNIQUE">DR_ID, APPT_DATETIME</Constraint>
+      </Entity>
+      <Entity name="TREATMENT" id="ENT_TREAT">
+        <Column name="TREAT_ID" datatype="NUMBER(10)" nullable="NO" key="PK" default="TREAT_ID_SEQ.NEXTVAL"/>
+        <Column name="APPT_ID" datatype="NUMBER(10)" nullable="NO" fk="APPOINTMENT.APPT_ID" unique="YES"/>
+        <Column name="PT_ID" datatype="NUMBER(10)" nullable="NO" fk="PATIENT.PT_ID"/>
+        <Column name="DR_ID" datatype="NUMBER(5)" nullable="NO" fk="DOCTOR.DR_ID"/>
+        <Column name="TREAT_DATE" datatype="DATE" nullable="NO" default="SYSDATE"/>
+        <Column name="TREAT_CONTENT" datatype="VARCHAR2(4000)" nullable="YES"/>
+        <Column name="TREAT_COST" datatype="NUMBER(10)" nullable="NO" default="0"/>
+      </Entity>
+    </Entities>
+    <Relationships>
+      <Relationship name="FK_DOCTOR_DEPT" parent="DEPARTMENT" child="DOCTOR" parentKeys="DEPT_CODE" childKeys="DEPT_CODE" type="1:N"/>
+      <Relationship name="FK_SCHEDULE_DR" parent="DOCTOR" child="SCHEDULE" parentKeys="DR_ID" childKeys="DR_ID" type="1:N"/>
+      <Relationship name="FK_APPT_PT" parent="PATIENT" child="APPOINTMENT" parentKeys="PT_ID" childKeys="PT_ID" type="1:N"/>
+      <Relationship name="FK_APPT_DR" parent="DOCTOR" child="APPOINTMENT" parentKeys="DR_ID" childKeys="DR_ID" type="1:N"/>
+      <Relationship name="FK_TREAT_APPT" parent="APPOINTMENT" child="TREATMENT" parentKeys="APPT_ID" childKeys="APPT_ID" type="1:1"/>
+      <Relationship name="FK_TREAT_PT" parent="PATIENT" child="TREATMENT" parentKeys="PT_ID" childKeys="PT_ID" type="1:N"/>
+      <Relationship name="FK_TREAT_DR" parent="DOCTOR" child="TREATMENT" parentKeys="DR_ID" childKeys="DR_ID" type="1:N"/>
+    </Relationships>
+    <Notes>
+      <Note>Model generated from user's report and provided SQL. ERwin version targeted: 7.2.9.2458</Note>
+      <Note>APPOINTMENT.DR_NAME is a denormalized column for performance as documented in the report.</Note>
+    </Notes>
+  </Model>
+</ERwinExport>
